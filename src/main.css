@@ -1,0 +1,98 @@
+*, html, body {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html, body {
+	width: 100%;
+	height: 100%;
+}
+
+.empty {
+	display: block;
+	width: 100%;
+	height: 100%;
+	font-family: 'Helvetica';
+}
+
+.title-empty {
+	display: flex;
+	font-size: 1.5em;
+	width: 100%;
+	height: 50%;
+	justify-content: center;
+	align-items: center;
+}
+
+.instruction {
+	font-size: 1.3em;
+	width: 100%;
+	height: 50%;
+}
+
+.title-instruction {
+	display: block;
+	width: 100%;
+	text-align: center;
+	padding-bottom: 4px;
+}
+
+.img-instruction {
+	display: block;
+	width: 100%;
+}
+
+.img-instruction > img {
+	display: block;
+	margin: auto;
+}
+
+.choice {
+	display: none;
+}
+
+select {
+	margin: 2% 5%;
+	width: 40%;
+	font-size: 1.2em;
+	padding: 1%;
+	font-family: 'Helvetica';
+	outline: none;
+}
+
+table {
+	width: 90%;
+	margin: auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-family: 'Helvetica';
+	font-size: 1.2em;
+	border-collapse: collapse;
+	table-layout: fixed;
+}
+
+td, th {
+	padding: 3px 5px;
+	vertical-align: top;
+}
+
+td:first-child, th:first-child {
+	width: 30%;
+}
+
+td:nth-child(2),  th:nth-child(2) {
+	width: 50%;
+}
+
+td:last-child, th:last-child {
+	width: 20%;
+}
+
+tr {
+	border-bottom: 2px solid black;
+}
+
+tr:last-child {
+	border-bottom: none;
+}

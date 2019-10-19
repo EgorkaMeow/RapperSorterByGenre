@@ -1,0 +1,54 @@
+*, html, body {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html, body {
+	width: 100%;
+	height: 100%;
+	font-family: 'Helvetica';
+}
+
+.logo {
+	display: block;
+	width: 40%;
+	margin: auto;
+	padding-top: 20px;
+}
+
+.logo > img {
+	width: 100%;
+}
+
+.title, .website {
+	display: block;
+	width: 100%;
+	margin: 5px 0;
+	text-align: center;
+}
+
+.website {
+	cursor: pointer;
+}
+
+.website:hover {
+	text-decoration: underline;
+}
+
+.social {
+	display: flex;
+	width: 30%;
+	margin: auto;
+	justify-content: space-around;
+}
+
+.social > img {
+	margin-top: 10px; 
+	width: 30%;
+	cursor: pointer;
+}
+
+.social > img:hover {
+	opacity: 0.8;
+}

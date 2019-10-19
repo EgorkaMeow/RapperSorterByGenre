@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>О программе</title>
+	<link rel="stylesheet" href="about.css">
+</head>
+<body>
+	<div class="logo">
+		<img src="logo.png" alt="">
+	</div>
+	<div class="title">Created by EgorkaMeow</div>
+	<div class="website">egorkameow.ml</div>
+	<div class="social">
+		<img src="vk.png" class="vk" alt="">
+		<img src="instagram.png" class="inst" alt="">
+	</div>
+	<script type="text/javascript">
+		const electron = require('electron');
+		const { ipcRenderer, shell } = electron;
+
+		document.querySelector(".website").addEventListener('click', function (e) {
+			shell.openExternal("http://www.egorkameow.ml");
+		});
+
+		document.querySelector(".vk").addEventListener('click', function (e) {
+			shell.openExternal("http://www.vk.com/egorkameow");
+		});
+
+		document.querySelector(".inst").addEventListener('click', function (e) {
+			shell.openExternal("http://www.instagram.com/egorkameow");
+		});
+	</script>
+</body>
+</html>

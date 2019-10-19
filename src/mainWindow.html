@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>RapperFinder</title>
+	<link rel="stylesheet" href="main.css">
+</head>
+<body>
+	<div class="empty">
+		<div class="title-empty">
+			Откройте файл с данными.
+		</div>
+		<div class="instruction">
+			<div class="title-instruction">
+				Для корректной работы программы рекомендуется следующее оформление открываемого файла.
+			</div>
+			<div class="img-instruction">
+				<img src="example.png" alt="">
+			</div>
+		</div>
+
+	</div>
+	<div class="choice">
+		<select class="select">
+		</select>
+	</div>
+<script type="text/javascript">
+	const electron = require('electron');
+	const { ipcRenderer } = electron;
+	let mainData, mainDataSort;
+
+	ipcRenderer.on('data', function(e, data){
+		if(!data.response && data.openedFile){
+			document.querySelector('.empty').innerHTML = 'Ошибка! Откройте файл повторно.';
+		}
+		else if(data.response){
+			mainData = data.result.mainData;
+			mainDataSort = data.result.mainDataSort;
+			document.querySelector(".empty").style.display = "none";
+
+			// document.body.insertAdjacentHTML('beforeend', '<div class="choice"><select class="select"></select></div>');
+			changeSelect(mainDataSort);
+
+			createTable(mainData, null);
+			// document.body.insertAdjacentHTML('beforeend', '<table class="table"><tbody class="tbody"><tr><th>Name</th><th>Emails</th><th>Genres</th></tr></tbody></table>');
+			// for(let row of data.result.mainData){
+			// 	document.querySelector(".tbody").insertAdjacentHTML('beforeend', '<tr><td>' + row.Name + '</td><td>' + row.Emails.join(',<br>') + '</td><td>' + row.Genre.join(',<br>') + '</td></tr>');
+			// }
+		}
+	});
+
+	document.querySelector(".select").addEventListener('change', function (e) {
+		if('all' === e.target.value){
+			createTable(mainData, null);
+		}
+		else {
+			createTable(mainDataSort, e.target.value);
+		}
+	})
+
+	window.onload = () => {
+		ipcRenderer.send('loadData');
+	};
+
+	ipcRenderer.on('allData', (e, data) => {
+		if(data.response){
+			mainData = data.result.mainData;
+			mainDataSort = data.result.mainDataSort;
+			document.querySelector(".empty").style.display = "none";
+			changeSelect(mainDataSort);
+			createTable(mainData, null);
+		}
+	});
+
+	function changeSelect(data){
+		document.querySelector(".choice").style.display = 'none';
+
+		let select = document.querySelector(".select");
+		let length = select.options.length;
+		if(0 !== length){
+			for(let i = length - 1 ; i >= 0 ; i--){
+				select.remove(i);
+			}
+		}
+		document.querySelector(".select").insertAdjacentHTML('beforeend', '<option value="all" selected>All</option>');
+		for(let option of Object.keys(data)){
+			document.querySelector(".select").insertAdjacentHTML('beforeend', '<option value="' + option + '">' + option + '</option>');
+		}
+		document.querySelector(".choice").style.display = 'block';
+	}
+
+	function createTable(data, genre){
+		if(null !== document.querySelector(".table")) {
+			document.querySelector(".table").remove();
+		}
+
+		document.body.insertAdjacentHTML('beforeend', '<table class="table"><tbody class="tbody"><tr><th>Name</th><th>Emails</th><th>Genres</th></tr></tbody></table>');
+		if(null === genre){
+			for(let row of data){
+				document.querySelector(".tbody").insertAdjacentHTML('beforeend', '<tr><td>' + row.Name + '</td><td>' + row.Emails.join(',<br>') + '</td><td>' + row.Genre.join(',<br>') + '</td></tr>');
+			}
+		}
+		else {
+			for(let row of data[genre]){
+				document.querySelector(".tbody").insertAdjacentHTML('beforeend', '<tr><td>' + row.Name + '</td><td>' + row.Emails.join(',<br>') + '</td><td>' + row.Genre.join(',<br>') + '</td></tr>');
+			}
+		}
+
+	}
+
+</script>
+</body>
+</html>
