@@ -29,7 +29,7 @@ function initDarwinWin32 () {
 
 // Ask the user if update is available
 	electron.autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
-		dialog.showMessageBox(window, {
+		dialog.showMessageBox({
 				type: 'question',
 				buttons: ['Update', 'Cancel'],
 				defaultId: 0,
