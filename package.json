@@ -26,7 +26,8 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "RapperSorterByGenre"
+            "name": "RapperSorterByGenre",
+			"setupIcon": "src/icons/icon.ico"
           }
         },
         {

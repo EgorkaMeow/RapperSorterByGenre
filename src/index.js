@@ -43,9 +43,10 @@ const createWindow = () => {
 					dialog.showOpenDialog(mainWindow, {
 						properties: ['openFile'],
 						filters: [
-							{ name: 'Файл Excel', extensions: ['xlsx'] },
+							{ name: 'Файл Excel или текстовый', extensions: ['xlsx', 'txt'] },
 						]
 					}).then(result => {
+						console.log(result);
 						console.log(result.filePaths[0]);
 						let workbook = XLSX.readFile(result.filePaths[0]);
 						let sheet_name_list = workbook.SheetNames;
