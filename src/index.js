@@ -1,6 +1,7 @@
 const { app, BrowserWindow, Menu, dialog, ipcMain, shell } = require('electron');
 
 const fs = require('fs');
+const path = require('path');
 const XLSX = require('xlsx');
 
 const updater = require('./updater');
@@ -46,43 +47,75 @@ const createWindow = () => {
 							{ name: 'Файл Excel или текстовый', extensions: ['xlsx', 'txt'] },
 						]
 					}).then(result => {
-						console.log(result);
-						console.log(result.filePaths[0]);
-						let workbook = XLSX.readFile(result.filePaths[0]);
-						let sheet_name_list = workbook.SheetNames;
-						mainData = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
-						for(let data of mainData){
-							let errors = [];
-							if(Object.keys(data)[0] != 'Name'){
-								data['Name'] = data[Object.keys(data)[0]];
-								errors.push(Object.keys(data)[0]);
-							}
-							if(Object.keys(data)[1] != 'Emails'){
-								data['Emails'] = data[Object.keys(data)[1]];
-								errors.push(Object.keys(data)[1]);
-							}
-							if(Object.keys(data)[2] != 'Genre'){
-								data['Genre'] = data[Object.keys(data)[2]];
-								errors.push(Object.keys(data)[2]);
-							}
-							for(let error of errors){
-								delete data[error];
-							}
-							data.Emails = data.Emails.split(/\s*[/]\s*/g);
-							data.Genre = data.Genre.split(/\s*[,]\s*/g);
-							for(let genre of data.Genre){
-								if(!mainDataSort.hasOwnProperty(genre)){
-									mainDataSort[genre] = [];
+						if('.txt' == path.extname(result.filePaths[0])) {
+							fs.readFile(result.filePaths[0], (err, data) => {
+								if(err){
+									if('ENOENT' !== err.code){
+										throw err;
+									}
 								}
-								mainDataSort[genre].push(data);
-							}
+								let chunks = data.toString().split('\r\n');
+								chunks.pop();
+								mainData = [];
+								for(let chunk of chunks) {
+									let _data = chunk.split(/\s*[:]\s*/g);
+									let proc_data = {
+										"Name": _data[0],
+										"Emails": _data[1].split(/\s*[/]\s*/g),
+										"Genre": _data[2].split(/\s*[/]\s*/g)
+									};
+									mainData.push(proc_data);
+
+									for(let genre of proc_data.Genre){
+										genre = genre.replace(/\s/gi, '');
+										if(!mainDataSort.hasOwnProperty(genre)){
+											mainDataSort[genre] = [];
+										}
+										mainDataSort[genre].push(proc_data);
+									}
+								}
+
+								getData();
+								saveDataToFile();
+							});
 						}
-						console.log(mainData);
+						else {
+							let workbook = XLSX.readFile(result.filePaths[0]);
+							let sheet_name_list = workbook.SheetNames;
+							mainData = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
+							for(let data of mainData){
+								let errors = [];
+								if(Object.keys(data)[0] != 'Name'){
+									data['Name'] = data[Object.keys(data)[0]];
+									errors.push(Object.keys(data)[0]);
+								}
+								if(Object.keys(data)[1] != 'Emails'){
+									data['Emails'] = data[Object.keys(data)[1]];
+									errors.push(Object.keys(data)[1]);
+								}
+								if(Object.keys(data)[2] != 'Genre'){
+									data['Genre'] = data[Object.keys(data)[2]];
+									errors.push(Object.keys(data)[2]);
+								}
+								for(let error of errors){
+									delete data[error];
+								}
+								data.Emails = data.Emails.split(/\s*[/]\s*/g);
+								data.Genre = data.Genre.split(/\s*[,]\s*/g);
+								for(let genre of data.Genre){
+									if(!mainDataSort.hasOwnProperty(genre)){
+										mainDataSort[genre] = [];
+									}
+									mainDataSort[genre].push(data);
+								}
+							}
 
-						console.log(mainDataSort);
+							getData();
+							saveDataToFile();
+						}
 
-						getData();
-						saveDataToFile();
+
+
 					}).catch(err => {
 						console.log(err)
 					})
@@ -114,8 +147,7 @@ const createWindow = () => {
 		]
 	}
 	]));
-  // Open the DevTools.
- // mainWindow.webContents.openDevTools();
+	//mainWindow.webContents.openDevTools();
 
   // Emitted when the window is closed.
 	mainWindow.on('closed', () => {

@@ -1,7 +1,7 @@
 {
   "name": "rappersorterbygenre",
   "productName": "RapperSorterByGenre",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "Rapper sorter by genre",
   "main": "src/index.js",
   "scripts": {
